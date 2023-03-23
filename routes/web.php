@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,13 +16,10 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+    return Inertia::render('Landing');
+    // return auth()->user() ? to_route('dashboard') : to_route('login');
 });
+
 
 Route::middleware([
     'auth:sanctum',
@@ -32,4 +29,6 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+    Route::get('/employees', [UserController::class, 'getUsersPaginated'])->name('employees');
+    Route::get('/employees/{id}', [UserController::class, 'getUser'])->name('employees');
 });
