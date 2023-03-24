@@ -1,13 +1,14 @@
 <script setup>
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue';
 import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import route from 'ziggy';
 
 defineProps({
   navigation: Object,
 });
 
+const showSubmenu = ref(sessionStorage.getItem('showSubmenu') === 'false' ? false : true);
 const currentRoute = ref(route().current());
 const isCurrent = (menuItem) => {
   return (
@@ -15,6 +16,9 @@ const isCurrent = (menuItem) => {
     menuItem.children?.some((subItem) => `/${currentRoute.value}`.includes(subItem.href))
   );
 };
+watch(showSubmenu, (showSubmenu) => {
+  sessionStorage.setItem('showSubmenu', showSubmenu);
+});
 </script>
 
 <template>
@@ -47,9 +51,10 @@ const isCurrent = (menuItem) => {
           {{ item.name }}
         </a>
       </div>
-      <Disclosure v-else v-slot="{ open }" as="div" :default-open="true" class="space-y-1">
+      <Disclosure v-else as="div" class="space-y-1">
         <DisclosureButton
           class="group flex w-full items-center rounded-md py-2 pl-2 pr-1 text-left text-sm font-medium focus:outline-none focus:ring-2 focus:ring-sky-500 bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          @click="showSubmenu = !showSubmenu"
         >
           <component
             :is="item.icon"
@@ -59,7 +64,7 @@ const isCurrent = (menuItem) => {
           <span class="flex-1">{{ item.name }}</span>
           <svg
             :class="[
-              open ? 'rotate-90 text-gray-400' : 'text-gray-300',
+              showSubmenu ? 'rotate-90 text-gray-400' : 'text-gray-300',
               'ml-3 h-5 w-5 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-gray-400 ',
             ]"
             viewBox="0 0 20 20"
@@ -76,7 +81,7 @@ const isCurrent = (menuItem) => {
           leave-from-class="transform scale-100 opacity-100"
           leave-to-class="transform scale-95 opacity-0"
         >
-          <div v-show="open">
+          <div v-show="showSubmenu">
             <DisclosurePanel class="space-y-1" static>
               <DisclosureButton
                 v-for="subItem in item.children"
