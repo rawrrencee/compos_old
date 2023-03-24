@@ -23,17 +23,19 @@ watch(showSidebar, (showSidebar) => {
   <div class="min-h-full">
     <NavSidebarMobile v-model:sidebar-open="showMobileSidebar" :navigation="navigation" />
     <Transition
-      enter-active-class="transition ease-in-out duration-150 transform"
+      enter-active-class="transition ease-in-out duration-100 transform"
       enter-from-class="-translate-x-full"
       enter-to-class="translate-x-0"
-      leave-active-class="transition ease-in-out duration-150 transform"
+      leave-active-class="transition ease-in-out duration-100 transform"
       leave-from-class="translate-x-0"
       leave-to-class="-translate-x-full"
     >
       <NavSidebarDesktop :navigation="navigation" v-if="showSidebar" />
     </Transition>
 
-    <div :class="[showSidebar ? ' lg:pl-64' : '', 'transition-all duration-150 flex flex-1 flex-col']">
+    <div
+      :class="[showSidebar ? ' lg:pl-64' : '', 'transition-[padding] ease-in-out duration-150 flex flex-1 flex-col']"
+    >
       <NavHorizontalMenu v-model:show-mobile-sidebar="showMobileSidebar" v-model:show-sidebar="showSidebar" />
       <header v-if="$slots.header" class="bg-white shadow">
         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
